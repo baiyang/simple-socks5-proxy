@@ -53,7 +53,7 @@ bool confirm_request(Socket _sock, RequestVersion &req_versoin)
 
 void* build_connection(void *data)
 {
-	
+
 	Socket _sock = *(Socket*)data;
 	int packet_len;
 	RequestBuild req_build;
@@ -194,7 +194,7 @@ void do_select(Connection &conn)
 			if( FD_ISSET(conn._dst._sock, &read_set) ){
 				len = recv(conn._dst._sock, buff, 4096, 0);
 				if( len <= 0){
-                    msg("dst error");
+					msg("dst error");
 					break;
 				}
 				send(conn._src._sock, buff, len, 0);
