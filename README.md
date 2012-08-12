@@ -12,3 +12,6 @@ I use a thread to process every connection to transfrom data between them.
 It's very simple.
 
 If you are old man in this field, Just skip my code.
+
+util.h   defines some structs.
+socks.h  defines some functions.
