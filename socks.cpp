@@ -17,6 +17,7 @@ void do_listen()
 		
 		if (confirm_request(_client, req_versoin) == false){
 			msg("Confirm failure");
+			close(_client._sock);
 			continue;
 		}
 		
@@ -73,6 +74,7 @@ void* build_connection(void *data)
 	if( req_build._cmd != 0x01){
 		reply_build._cmd = 0x07;
 		sock_write(_sock._sock, reply_build, packet_len);
+		close(_sock._sock);
 		return 0;
 	}
 	
@@ -84,6 +86,7 @@ void* build_connection(void *data)
 		reply_build._cmd = 0x04;
 		msg("Error in resolving ");
 		sock_write(_sock._sock, reply_build, packet_len);
+		close(_sock._sock);
 		return 0;
 	}
 	
@@ -92,6 +95,7 @@ void* build_connection(void *data)
 		reply_build._cmd = 0x03;
 		msg("Unreachable Host");
 		sock_write(_sock._sock, reply_build, packet_len);
+		close(_sock._sock);
 		return 0;
 	}
 
@@ -175,10 +179,6 @@ void do_select(Connection &conn)
 		
 		/*** Block until some fds are ready to write or read ***/
 		ret = select(max_fd + 1, &read_set, NULL, NULL, 0);
-		if( ret == -1){
-			msg("select error");
-			break;
-		}
 		if(ret > 0){
 			if( FD_ISSET(conn._src._sock, &read_set) ){
 				len = recv(conn._src._sock, buff, 4096, 0);
@@ -188,20 +188,24 @@ void do_select(Connection &conn)
 				}
 				send(conn._dst._sock, buff, len, 0);
 				buff[len] = '\0';
-//				msg(buff);
+				msg(buff);
 			}
 			
 			if( FD_ISSET(conn._dst._sock, &read_set) ){
 				len = recv(conn._dst._sock, buff, 4096, 0);
 				if( len <= 0){
+                    msg("dst error");
 					break;
 				}
 				send(conn._src._sock, buff, len, 0);
 				buff[len] = '\0';
-//				msg(buff);
 			}
 		}
 	}
+
+	/*** close sockets on this connection***/
+	close(conn._src._sock);
+	close(conn._dst._sock);
 }
 
 template <class T>
