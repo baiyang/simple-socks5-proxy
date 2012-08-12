@@ -40,5 +40,4 @@ void serve_forever()
 void shutdown()
 {
 	close(_socks_server._sock);
-	
 }

@@ -13,8 +13,16 @@
 #include <sstream>
 
 
+enum ADDR_TYPE{IPV6 = 0x04, IPV4 = 0x01, DOMAIN = 0x03};
+
 const int MAX_CLIENTS = 10;
 const int PORT = 1080;
+
+template <class T>
+int sock_read(int &, T &);
+
+template <class T>
+int sock_write(int &, T &, int = -1);
 
 
 void msg(char *msg);
@@ -26,6 +34,5 @@ void do_select(Connection &);
 
 /*** thread function ***/
 void* build_connection(void *data);
-
 
 #endif  //endif

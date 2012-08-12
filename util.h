@@ -13,11 +13,10 @@
 typedef struct {
 	char _ver;
 	char _nmethods;
-	char *_methods;
+	char _methods[256];
 }RequestVersion;
 
 #pragma pack(pop)
-
 
 
 /***
@@ -33,7 +32,6 @@ typedef struct {
 #pragma pack(pop)
 
 
-
 /***
  * it only handles ipv4 request
  * ***/
@@ -45,7 +43,7 @@ typedef struct {
 	char _rsv;
 	char _atyp;
 	union {
-		char _info[1024]; // domain + port
+		char _info[512]; // domain + port
 		char _ipv4[4];
 		char _port[2];
 	}AddrPort;
